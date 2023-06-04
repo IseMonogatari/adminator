@@ -30,8 +30,8 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-//    @Column(name = "birthday")
-//    private LocalDate birthday;
+    @Column(name = "birthday")
+    private LocalDate birthday;
 
     @Column(name = "password", length = 1000)
     private String password;

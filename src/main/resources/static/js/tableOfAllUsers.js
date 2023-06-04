@@ -7,7 +7,7 @@ $(document).ready(function() {
 
     let user = showAuthorizedUser();
 
-    if (user.allRoles.indexOf('ROLE_ADMIN') === -1) {
+    if (user.role.indexOf('ROLE_ADMIN') === -1) {
         $('#v-pills-admin-tab').hide();
         $('#admin_panel').hide();
     } else {
@@ -42,8 +42,8 @@ function showAllUsers() {
                 "   <td>" + data[i].lastName + "</td>" +
                 "   <td>" + data[i].name + "</td>" +
                 "   <td>" + data[i].email + "</td>" +
-                // "   <td>" + new Date(data[i].birthday).toLocaleDateString('ru') + "</td>" +
-                "   <td>" + data[i].allRoles + "</td>" +
+                "   <td>" + data[i].age + "</td>" +
+                "   <td>" + data[i].role + "</td>" +
                 "   <td>" + "<button type=\"button\" class=\"btn btn-primary\" onclick='editModalById(" + data[i].id + ")'>Обновить</button>"
                 + " "
                 + "<button type=\"button\" class=\"btn btn-danger\" onclick='deleteModalById(" + data[i].id + ")'>Удалить</button>"
@@ -154,7 +154,7 @@ function deleteModalById(ID) {
     $("#lastName_delete").val(user.lastName);
     $("#name_delete").val(user.name);
     $("#email_delete").val(user.email);
-    $("#role_delete").val(user.allRoles);
+    $("#role_delete").val(user.role);
 
     $('#modal_delete').modal({
         show: true

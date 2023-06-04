@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
 
+    LocalDate nowTime = LocalDate.now();
+
+
     @Override
     public User save(UserDTO userDTO) {
         User user = usersRepository.findByName(userDTO.getName());
@@ -44,11 +48,10 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
-//            user.setBirthday(userBirthday(userDTO));    //TODO Устанавливаем дату рождения
+            user.setBirthday(userBirthday(userDTO));    //TODO Устанавливаем дату рождения
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             user.setRoles(Collections.singleton(roleService.getRoleByName(userDTO.getRole())));
         }
-
         return usersRepository.save(user);
     }
 
@@ -62,25 +65,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserById(Integer id) {
+    public UserDTO findUserById(Integer id) {
         //TODO родной метод getById(id) делает ленивую загрузку, поэтому и выдавало ошибку выгрузки пользователя.
         // Нужно реализовать свой собственный метод получения пользоватебя из БД -- findUserById(id).
-        return usersRepository.findUserById(id);
+        User user = usersRepository.findUserById(id);
+        return new UserDTO(user, userAge(user));
     }
 
     @Override
-    public List<User> allUsers() {
-        return usersRepository.findAll();
+    public List<UserDTO> allUsers() {
+        return usersRepository.findAll()
+                .stream()
+                .map(u -> {
+                    UserDTO uDTO = new UserDTO(u, userAge(u));
+                    return uDTO;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User update(UserDTO userDTO) {
-        User updatedUser = findUserById(Integer.valueOf(userDTO.getId()));
+    public UserDTO update(UserDTO userDTO) {
+        User updatedUser = usersRepository.findUserById(Integer.valueOf(userDTO.getId()));
         updatedUser = checkRoleData(updatedUser, userDTO, "ROLE_ADMIN", "ROLE_USER");
         if (updatedUser == null) {
             return null;
         }
-        return usersRepository.save(updatedUser);
+        usersRepository.save(updatedUser);
+        return new UserDTO(updatedUser, userAge(updatedUser));
     }
 
     @Override
@@ -97,7 +108,7 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
-//            user.setBirthday(userBirthday(userDTO));    //TODO изменяем дату рождения
+            user.setBirthday(userBirthday(userDTO));    //TODO изменяем дату рождения
             checkChangePassword(user, userDTO);
             checkEqualRole(user, userDTO, fistRole);
         } else if (equalsUserDataWithoutRole(user, userDTO)) {  //условие для добавления роли АДМИН через кнопку
@@ -109,7 +120,7 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
-//            user.setBirthday(userBirthday(userDTO));    //TODO изменяем дату рождения
+            user.setBirthday(userBirthday(userDTO));    //TODO изменяем дату рождения
             checkChangePassword(user, userDTO);
         }
         return user;
@@ -134,8 +145,27 @@ public class UserServiceImpl implements UserService {
                 && userDTO.getPassword() == null;
     }
 
-//    private LocalDate userBirthday(UserDTO userDTO) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-//        return LocalDate.parse(userDTO.getBirthday(), formatter);
-//    }
+    private LocalDate userBirthday(UserDTO userDTO) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return LocalDate.parse(userDTO.getBirthday(), formatter);
+    }
+
+    private LocalDate userBirthday(User user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return LocalDate.parse(user.getBirthday().toString(), formatter);
+    }
+    private String userBirthdayToString(User user) {
+        LocalDate userBirthday = user.getBirthday();
+        StringBuilder date = new StringBuilder();
+        date.append(userBirthday.getDayOfMonth());
+        date.append(".");
+        date.append(userBirthday.getMonthValue());
+        date.append(".");
+        date.append(userBirthday.getYear());
+        return date.toString();
+    }
+
+    private Integer userAge(User user) {
+        return nowTime.getYear() - user.getBirthday().getYear();
+    }
 }

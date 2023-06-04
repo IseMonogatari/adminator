@@ -22,19 +22,19 @@ public class UserRestController {
 
     // Получить список всех пользователей
     @GetMapping
-    public List<User> getUserList() {
+    public List<UserDTO> getUserList() {
         return userService.allUsers();
     }
 
     // Получить авторизованного пользователя
     @GetMapping("/authorized")
-    public User getAuthorizedUser(@AuthenticationPrincipal User user) {
-        return user;
+    public UserDTO getAuthorizedUser(@AuthenticationPrincipal User user) {
+        return userService.findUserById(user.getId());
     }
 
     // Получить пользователя по id
     @GetMapping(params = "id")
-    public User getUserById(@RequestParam("id") Integer id) {
+    public UserDTO getUserById(@RequestParam("id") Integer id) {
         return userService.findUserById(id);
     }
 

@@ -22,5 +22,5 @@ function showEmail() {
 }
 
 function showRoles() {
-    $("#authorized_user_firstname").append(showAuthorizedUser().allRoles);
+    $("#authorized_user_firstname").append(showAuthorizedUser().role);
 }

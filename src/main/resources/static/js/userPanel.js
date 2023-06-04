@@ -8,7 +8,8 @@ function tableAuthorizedUser() {
         "   <td>" + user.lastName + "</td>" +
         "   <td>" + user.name + "</td>" +
         "   <td>" + user.email + "</td>" +
-        "   <td>" + user.allRoles + "</td>" +
+        "   <td>" + user.age + "</td>" +
+        "   <td>" + user.role + "</td>" +
         "</tr>";
     $("#oneUserTableBody").html(table);
 }
