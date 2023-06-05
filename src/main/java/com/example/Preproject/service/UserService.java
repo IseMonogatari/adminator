@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    User save(UserDTO userRegistrationDTO);
+    UserDTO save(UserDTO userRegistrationDTO);
     UserDTO findUserById(Integer id);
     List<UserDTO> allUsers();
     UserDTO update(UserDTO userRegistrationDTO);

@@ -58,10 +58,5 @@ public class RequestServiceImpl implements RequestService {
     public boolean getUserRequest(Integer userId) {
         Request request = requestRepository.findRequestById(userId);
         return request != null ? request.isActiveRequest() : false;
-//        if (request != null) {
-//            return request.isActiveRequest();
-//        } else {
-//            return false;
-//        }
     }
 }

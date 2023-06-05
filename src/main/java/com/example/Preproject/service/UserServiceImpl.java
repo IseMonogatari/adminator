@@ -23,8 +23,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UsersRepository usersRepository;
 
-    @Autowired
-    private RoleService roleService;
+//    @Autowired
+//    private RoleService roleService;
 
     @Autowired
     private RolesRepository rolesRepository;
@@ -37,10 +37,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User save(UserDTO userDTO) {
+    public UserDTO save(UserDTO userDTO) {
         User user = usersRepository.findByName(userDTO.getName());
         if (user != null && user.getRoles().contains(rolesRepository.findByRole("ROLE_ADMIN"))) {
-            user.getRoles().add(roleService.getRoleByName(userDTO.getRole()));
+            user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
         } else if (user != null && user.getRoles().contains(rolesRepository.findByRole("ROLE_USER"))) {
             return null;
         } else {
@@ -50,9 +50,10 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userDTO.getEmail());
             user.setBirthday(userBirthday(userDTO));    //TODO Устанавливаем дату рождения
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            user.setRoles(Collections.singleton(roleService.getRoleByName(userDTO.getRole())));
+            user.setRoles(Collections.singleton(rolesRepository.findByRole(userDTO.getRole())));
         }
-        return usersRepository.save(user);
+        usersRepository.save(user);
+        return new UserDTO(user, userAge(user));
     }
 
     @Override
@@ -66,8 +67,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findUserById(Integer id) {
-        //TODO родной метод getById(id) делает ленивую загрузку, поэтому и выдавало ошибку выгрузки пользователя.
-        // Нужно реализовать свой собственный метод получения пользоватебя из БД -- findUserById(id).
         User user = usersRepository.findUserById(id);
         return new UserDTO(user, userAge(user));
     }
@@ -76,10 +75,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> allUsers() {
         return usersRepository.findAll()
                 .stream()
-                .map(u -> {
-                    UserDTO uDTO = new UserDTO(u, userAge(u));
-                    return uDTO;
-                })
+                .map(u -> new UserDTO(u, userAge(u)))
                 .collect(Collectors.toList());
     }
 
@@ -102,6 +98,10 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+
+    // ---- Приватные методы ----
+
 
     private User checkRoleData(User user, UserDTO userDTO, String fistRole, String secondRole) {
         if (user.getRoles().contains(rolesRepository.findByRole(fistRole))) {
@@ -157,11 +157,11 @@ public class UserServiceImpl implements UserService {
     private String userBirthdayToString(User user) {
         LocalDate userBirthday = user.getBirthday();
         StringBuilder date = new StringBuilder();
-        date.append(userBirthday.getDayOfMonth());
-        date.append(".");
-        date.append(userBirthday.getMonthValue());
-        date.append(".");
-        date.append(userBirthday.getYear());
+        date.append(userBirthday.getDayOfMonth())
+                .append(".")
+                .append(userBirthday.getMonthValue())
+                .append(".")
+                .append(userBirthday.getYear());
         return date.toString();
     }
 
