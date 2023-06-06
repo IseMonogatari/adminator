@@ -1,0 +1,41 @@
+## ---- PORT ----
+server:
+  port: !!int 8080
+
+## ---- Spring ----
+spring:
+  jpa: ## ---- Postgres ----
+    database: POSTGRESQL
+    hibernate: ## ---- Hibernate ddl auto ---- # (create, create-drop, validate, update, none)
+      ddl-auto: create-drop
+    show-sql: true  # ---- Show SQL ----
+
+  datasource: ## ---- Spring DATASOURCE ----
+    url: jdbc:postgresql://localhost:5432/spring_hiber?useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8
+    username: root
+    password: root
+
+  mvc:
+    hidden-method: ## ---- Hidden Method ----
+      filter:
+        enabled: true
+
+  mail: ## ---- Mail ----
+    host: smtp.gmail.com
+    username: shapran.spb@gmail.com
+    password: jlrjhkncvnoqbopo
+    port: !!int 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mail: # ---- Делавем логирование в консоли ----
+  debug: true
+
+notifications: # ---- Попределяем число дней перед уведомлением админов о ДР пользователей
+  users:
+    birthday: !!int 5

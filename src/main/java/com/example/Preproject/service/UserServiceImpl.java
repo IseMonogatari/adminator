@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,9 +23,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersRepository usersRepository;
-
-//    @Autowired
-//    private RoleService roleService;
 
     @Autowired
     private RolesRepository rolesRepository;
@@ -166,6 +164,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private Integer userAge(User user) {
-        return nowTime.getYear() - user.getBirthday().getYear();
+        return Period.between(user.getBirthday(), nowTime).getYears();
     }
 }
