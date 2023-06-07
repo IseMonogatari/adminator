@@ -66,12 +66,10 @@ function showUser(ID) {
             user = response;
             console.log("Удачный вызов пользователя по ID = " + ID);
             // console.log(response);
-            console.log("_______")
         },
         error: function (error) {
             console.log("Ошибка вызова пользователя по ID")
             console.log(error);
-            console.log("_______")
         }
     })
     return user;
@@ -91,6 +89,7 @@ function editModalById(ID) {
     $("#lastName_edit").val(user.lastName);
     $("#name_edit").val(user.name);
     $("#email_edit").val(user.email);
+    $("#birthday_edit").val(user.birthday);
     $("#password_edit").val();  //user.password
     $("#role_edit").val(user.role);
 
@@ -129,6 +128,7 @@ function editUser(ID) {
             lastName: $("#lastName_edit").val(),
             name: $("#name_edit").val(),
             email: $("#email_edit").val(),
+            birthday: $("#birthday_edit").val(),
             password: $("#password_edit").val(),
             role: $("#role_edit").val()
         }),
@@ -154,6 +154,7 @@ function deleteModalById(ID) {
     $("#lastName_delete").val(user.lastName);
     $("#name_delete").val(user.name);
     $("#email_delete").val(user.email);
+    $("#birthday_delete").val(user.birthday);
     $("#role_delete").val(user.role);
 
     $('#modal_delete').modal({

@@ -10,6 +10,7 @@ function appendUser() {
             lastName: $("#lastName_append").val(),
             name: $("#name_append").val(),
             email: $("#email_append").val(),
+            birthday: $("#birthday_append").val(),
             password: $("#password_append").val(),
             role: $("#role_append").val()
         }),
@@ -30,6 +31,7 @@ function appendUser() {
     $("#lastName_append").val('');
     $("#name_append").val('');
     $("#email_append").val('');
+    $("#birthday_append").val('');
     $("#password_append").val('');
 }
 

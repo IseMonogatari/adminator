@@ -1,6 +1,7 @@
 package com.example.Preproject.model;
 
 
+import com.example.Preproject.util.FormatterUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,12 +61,16 @@ public class User implements UserDetails {
     public String getAllRoles() {
         return getRoles()
                 .stream()
-                .map(s -> s.getRole())
+                .map(Role::getRole)
                 .collect(Collectors.joining(" "));
     }
 
     public String toStringWithoutPassAndRole() {
-        return id.toString() + " " + lastName + " " + name + " " + email;
+        return id.toString() +
+                " " + lastName +
+                " " + name +
+                " " + email +
+                " " + this.birthday.format(FormatterUtils.defaultDateFormatter());
     }
 
     @Override

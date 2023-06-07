@@ -14,6 +14,8 @@ public class MailRestController {
     @Autowired
     private MailSender mailSender;
 
+    //TODO Удалить контроллер!!!!
+
     @PostMapping
     public void sendMessageToGmail(@RequestParam("email_to") String  emailTo,
                                    @RequestParam("subject") String  subject,

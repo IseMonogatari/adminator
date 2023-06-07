@@ -5,6 +5,7 @@ import com.example.Preproject.dto.UserDTO;
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RolesRepository;
 import com.example.Preproject.repository.UsersRepository;
+import com.example.Preproject.util.FormatterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
-            user.setBirthday(userBirthday(userDTO));    //TODO Устанавливаем дату рождения
+            user.setBirthday(userBirthday(userDTO));
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             user.setRoles(Collections.singleton(rolesRepository.findByRole(userDTO.getRole())));
         }
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
-            user.setBirthday(userBirthday(userDTO));    //TODO изменяем дату рождения
+            user.setBirthday(userBirthday(userDTO));
             checkChangePassword(user, userDTO);
             checkEqualRole(user, userDTO, fistRole);
         } else if (equalsUserDataWithoutRole(user, userDTO)) {  //условие для добавления роли АДМИН через кнопку
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
-            user.setBirthday(userBirthday(userDTO));    //TODO изменяем дату рождения
+            user.setBirthday(userBirthday(userDTO));
             checkChangePassword(user, userDTO);
         }
         return user;
@@ -144,23 +144,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private LocalDate userBirthday(UserDTO userDTO) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return LocalDate.parse(userDTO.getBirthday(), formatter);
-    }
-
-    private LocalDate userBirthday(User user) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return LocalDate.parse(user.getBirthday().toString(), formatter);
-    }
-    private String userBirthdayToString(User user) {
-        LocalDate userBirthday = user.getBirthday();
-        StringBuilder date = new StringBuilder();
-        date.append(userBirthday.getDayOfMonth())
-                .append(".")
-                .append(userBirthday.getMonthValue())
-                .append(".")
-                .append(userBirthday.getYear());
-        return date.toString();
+        return LocalDate.parse(userDTO.getBirthday(), FormatterUtils.defaultDateFormatter());
     }
 
     private Integer userAge(User user) {
