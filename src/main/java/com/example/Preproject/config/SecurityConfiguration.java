@@ -45,21 +45,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .cors().disable()
                 .csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/static/**").permitAll() //указываю путь до ресурсов js
+                    .antMatchers("/static/**", "/js/**").permitAll() //указываю путь до ресурсов js
                     //Доступ только для не зарегистрированных пользователей
                     .antMatchers("/registration").permitAll()
+                    .antMatchers("/forgot_passwords/**", "/reset_passwords").permitAll()
                     .antMatchers("/user/**").permitAll()
                     .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
                     .anyRequest().authenticated()
                 .and()
-                    .formLogin().loginPage("/login").permitAll()
+                    .formLogin().loginPage("/myLogin").permitAll()
                     .successHandler(successUserHandler) // подключаем наш SuccessHandler для перенеправления по ролям
                 .and()
                     .logout()
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/login?logout")
+                    .logoutSuccessUrl("/myLogin?logout")
                     .permitAll();
 
     }

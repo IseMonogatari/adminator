@@ -84,7 +84,6 @@
                         <label class="control-label" for="password">Пароль:</label>
                         <input id="password" class="form-control" type="password" th:field="*{password}"
                                required autofocus="autofocus" placeholder="*****"/>
-                        <!-- <input type="text" th:field="*{password}" id="password"/> -->
                     </div>
 
                     <div class="form-group"> <!-- style="height: 200px;" -->
@@ -96,10 +95,10 @@
                     </div>
 
 
-                    <div class="form-group ">
+                    <div class="form-group">
                         <button type="submit" class="btn btn-primary mb-2">Зарегистрироваться</button> <!-- bnt bnt-success -->
                         <span>Уже зарегистрированы?
-                            <a href="/" th:href="@{/login}">Войти здесь.</a>
+                            <a href="/" th:href="@{/myLogin}">Войти здесь.</a>
                         </span>
                     </div>
                 </form>

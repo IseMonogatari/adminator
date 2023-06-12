@@ -28,13 +28,6 @@ function showAllUsers() {
 
         let table;
 
-        // let date = new Date();
-        // // var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        // let now = date.toLocaleDateString('en-US');
-        // console.log(now);
-
-        // new Date(data[i].birthday).toLocaleDateString('ru')
-
         for (i = 0; i < data.length; i++) {
             table = table +
                 "<tr>" +

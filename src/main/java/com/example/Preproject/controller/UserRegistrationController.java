@@ -2,7 +2,6 @@ package com.example.Preproject.controller;
 
 import com.example.Preproject.dto.UserDTO;
 import com.example.Preproject.service.UserService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,7 @@ public class UserRegistrationController {
     @Autowired
     private UserService userService;
 
-    //сохраняем данные из 54 строчки в registration
+    //сохраняем данные из 57 строчки в registration
     @ModelAttribute("user")
     public UserDTO userRegistrationDTO() {
         return new UserDTO();
