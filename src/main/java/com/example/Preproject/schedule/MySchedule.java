@@ -30,17 +30,24 @@ public class MySchedule {
     private int daysBeforeBirthday;
 
     private final String SUBJECT_BIRTHDAY = "День рождения";
+    private final String FINAL_STRING_FOR_PERSON = "\nНе забудьте поздравить этого человека!";
+    private final String FINAL_STRING_FOR_PEOPLE = "\nНе забудьте поздравить этих людей!";
 
     LocalDate nowTime = LocalDate.now();
 
-//    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 120000)
     public void sendBirthdayMessageToAdmins() {
-        List<User> userList = usersRepository.findAllByRoles(rolesRepository.findByRole("ROLE_ADMIN"));
-        if (!userList.isEmpty() && !getUserStringsWithBirthday().isEmpty()) {
-            userList.forEach(user -> {
+        List<User> admins = usersRepository.findAllByRoles(rolesRepository.findByRole("ROLE_ADMIN"));
+        List<String> userStringList = getUserStringsWithBirthday();
+        if (!admins.isEmpty() && !userStringList.isEmpty()) {
+            admins.forEach(user -> {
                 StringBuilder message = new StringBuilder(String.format("Уважаемый %s!\n\n", user.getName()));
-                getUserStringsWithBirthday().forEach(message::append);
-                message.append("\nНе забудьте поздравить этих людей!");
+                userStringList.forEach(message::append);
+                if (userStringList.size() > 1) {
+                    message.append(FINAL_STRING_FOR_PEOPLE);
+                } else {
+                    message.append(FINAL_STRING_FOR_PERSON);
+                }
                 mailSender.send(user.getEmail(), SUBJECT_BIRTHDAY, message.toString());
             });
         }

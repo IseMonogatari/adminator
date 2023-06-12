@@ -34,22 +34,14 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Value("${server.port}")
     private int port;
 
+    private final String SUBJECT_RESET_PASSWORD = "Изменение пароля";
+
 
     @Override
-    public boolean savePasswordReset(String email) {
-//        PasswordReset passwordReset = passwordResetRepository.findPasswordResetById(userId);
-//        if (passwordReset != null && StringUtils.hasText(passwordReset.getUser().getEmail())) {
-//            //TODO обновление
-//        }
-
+    public void savePasswordReset(String email) {
         User user = usersRepository.findUserByEmail(email);
-        if (StringUtils.hasText(user.getEmail())) {
-            passwordResetRepository.save(new PasswordReset(UUID.randomUUID().toString(), user));
-            sendPasswordResetMessage(user);
-            return true;
-        } else {
-            return false;
-        }
+        passwordResetRepository.save(new PasswordReset(UUID.randomUUID().toString(), user));
+        sendPasswordResetMessage(user);
     }
 
     @Override
@@ -68,10 +60,18 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     @Override
-    public void saveNewPassword(PasswordResetDTO passwordResetDTO) {
+    public boolean saveNewPassword(PasswordResetDTO passwordResetDTO) {
         User user = usersRepository.findUserByEmail(passwordResetDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(passwordResetDTO.getPassword()));
-        usersRepository.save(user);
+        if (!StringUtils.hasText(passwordResetDTO.getPassword())) {
+            return false;
+        } else {
+            if (!user.getEmail().equals(passwordResetDTO.getEmail())) {
+                user.setEmail(passwordResetDTO.getEmail());
+            }
+            user.setPassword(passwordEncoder.encode(passwordResetDTO.getPassword()));
+            usersRepository.save(user);
+            return true;
+        }
     }
 
     @Override
@@ -80,11 +80,11 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     private void sendPasswordResetMessage(User user) {
-        String message = String.format("Здравствуйте, %s!\n" +
+        String message = String.format("Здравствуйте, %s!\n\n" +
                         "Для обновления пароля перейдите по ссылке: http://localhost:" + port +
                         "/forgot_passwords/new_password/%s",
                         user.getName(), findTokenByUserId(user.getId()));
 
-        mailSender.send(user.getEmail(), "Изменение пароля", message);
+        mailSender.send(user.getEmail(), SUBJECT_RESET_PASSWORD, message);
     }
 }

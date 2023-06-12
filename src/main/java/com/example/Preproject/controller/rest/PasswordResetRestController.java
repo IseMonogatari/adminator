@@ -27,7 +27,10 @@ public class PasswordResetRestController {
 
     @PutMapping
     public ResponseEntity<String> newPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
-        passwordResetService.saveNewPassword(passwordResetDTO);
-        return new ResponseEntity<>("Успешное обновление пароля!", HttpStatus.OK);
+        if (passwordResetService.saveNewPassword(passwordResetDTO)) {
+            return new ResponseEntity<>("Успешное обновление пароля!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Вы не передали никакого пароля!", HttpStatus.BAD_REQUEST);
+        }
     }
 }

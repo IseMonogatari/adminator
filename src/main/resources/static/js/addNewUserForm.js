@@ -61,7 +61,7 @@ function set_message_info(id_div, text) {
 // TODO Выводит сообщение об успешном добавлении пользователя
 function set_message_success(id_div, text) {
     let $item = $('<div  class="alert alert-success">' + text + '</div>');
-    $item.appendTo($(id_div)).delay(3000).slideUp(200, function(){
+    $item.appendTo($(id_div)).delay(5000).slideUp(200, function(){
         $item.remove();
     });
 }

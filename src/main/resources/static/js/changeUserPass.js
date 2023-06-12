@@ -9,11 +9,12 @@ function sendEmailForChangePassword() {
             email: $("#email_password_reset").val()
         }),
         success: function(result) {
-            console.log("Выполнелась херня");
-            console.log($("#email_password_reset").val());
+            set_message_success('#success_send_password_reset',
+                'Перейдите по ссылке, указанной в отправленном письме');
         },
         error: function (error) {
-            console.log("какая-то ошибка обновления" + error);
+            set_message_error('#mistake_send_password_reset',
+                'Пользователя с данной почтой не существует!')
         }
     });
 }
@@ -31,9 +32,12 @@ function changeUserPassword() {
         }),
         success: function(result) {
             console.log(result);
+            set_message_success('#success_reset_password',
+                'Ваши данные были обновлены!');
         },
         error: function (error) {
-            console.log("какая-то ошибка сохранения нового пароля\n" + error);
+            set_message_error('#mistake_reset_password',
+                'Ошибка обновления данных.')
         }
     });
 }
