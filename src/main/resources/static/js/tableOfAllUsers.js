@@ -31,6 +31,8 @@ function showAllUsers() {
         for (i = 0; i < data.length; i++) {
             table = table +
                 "<tr>" +
+                // "   <td>" + getDuck() + "</td>" +
+                "   <td>" + "<img src=" + data[i].duckUrl + " width=\"120\" height=\"120\" alt=\"duck\">" + "</td>" +
                 "   <td>" + data[i].id + "</td>" +
                 "   <td>" + data[i].lastName + "</td>" +
                 "   <td>" + data[i].name + "</td>" +

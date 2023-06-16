@@ -35,7 +35,7 @@ public class MySchedule {
 
     LocalDate nowTime = LocalDate.now();
 
-    @Scheduled(fixedDelay = 120000)
+//    @Scheduled(fixedDelay = 120000)
     public void sendBirthdayMessageToAdmins() {
         List<User> admins = usersRepository.findAllByRoles(rolesRepository.findByRole("ROLE_ADMIN"));
         List<String> userStringList = getUserStringsWithBirthday();

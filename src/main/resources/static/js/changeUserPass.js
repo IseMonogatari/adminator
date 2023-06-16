@@ -20,6 +20,9 @@ function sendEmailForChangePassword() {
 }
 
 function changeUserPassword() {
+    let paramsString = document.location.search; // ?token=4f23fsd
+    let searchParams = new URLSearchParams(paramsString);
+
     $.ajax({
         url: '/reset_passwords',
         type: 'PUT',
@@ -28,7 +31,9 @@ function changeUserPassword() {
         contentType: 'application/json',
         data: JSON.stringify({
             email: $("#email_reset").val(),
-            password: $("#password_reset").val()
+            password: $("#password_reset").val(),
+            confirmPassword: $("#confirm_password_reset").val(),
+            token: searchParams.get("token")
         }),
         success: function(result) {
             console.log(result);
@@ -37,7 +42,7 @@ function changeUserPassword() {
         },
         error: function (error) {
             set_message_error('#mistake_reset_password',
-                'Ошибка обновления данных.')
+                'Пароли не совпадают. Попытайтесь ещё раз!')
         }
     });
 }

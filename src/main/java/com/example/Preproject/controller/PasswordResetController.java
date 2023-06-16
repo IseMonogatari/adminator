@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/forgot_passwords")
@@ -19,8 +20,8 @@ public class PasswordResetController {
         return "forgotPassword";
     }
 
-    @GetMapping("/new_password/{token}")
-    public String getResetPage(@PathVariable String token) {
-        return passwordResetService.passwordResetUser(token) ? "newPassword" : "errorPage";
+    @GetMapping("/new_password")
+    public String getResetPage(@RequestParam("token") String token) {
+        return passwordResetService.hasPaswordResetByToken(token) ? "newPassword" : "errorPage";
     }
 }

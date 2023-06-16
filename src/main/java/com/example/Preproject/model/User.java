@@ -28,7 +28,7 @@ public class User implements UserDetails {
     private String name;
     @Column(name = "lastName")
     private String lastName;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "birthday")
@@ -42,6 +42,11 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private PasswordReset passwordReset;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private Duck duck;
 
     public User(String name, String lastName, String email, String password) {
         this.name = name;
@@ -71,6 +76,13 @@ public class User implements UserDetails {
                 " " + name +
                 " " + email +
                 " " + this.birthday.format(FormatterUtils.defaultDateFormatter());
+    }
+
+    public void setDuck(Duck duck) {
+        if (duck != null) {
+            duck.setUser(this);
+        }
+        this.duck = duck;
     }
 
     @Override

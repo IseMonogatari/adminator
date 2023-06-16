@@ -1,5 +1,6 @@
 package com.example.Preproject.controller.rest;
 
+import com.example.Preproject.dto.UserDTO;
 import com.example.Preproject.model.User;
 import com.example.Preproject.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class RequestRestController {
 
     // Получить всех пользователей с необработанными заявками
     @GetMapping
-    public List<User> getUserWhichWantToBeANewAdmin() {
+    public List<UserDTO> getUserWhichWantToBeANewAdmin() {
         return requestService.getUsersByRequest();
     }
 

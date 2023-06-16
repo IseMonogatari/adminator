@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class PasswordResetDTO {
     private String email;
     private String password;
+    private String confirmPassword;
+    private String token;
 }

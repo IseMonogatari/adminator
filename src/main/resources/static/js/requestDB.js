@@ -41,7 +41,6 @@ function postToVKAndChangeUserStatusToIWantToBeAAdminInDB() {
         success: function(result) {
             console.log(result);
             sendRequestToServer();
-            // getUsersWhichWantToBeAAdminForTable();
         },
         error: function (error) {
             console.log("ошибка запроса 'отправить комментарий в ВК' " + error);

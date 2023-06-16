@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Вход</title>
@@ -32,15 +32,29 @@
     <div class="row">
         <div class="w-50 mx-auto">
 
-            <h1>Вход</h1>
+            <h1 class="text-center">Вход</h1>
 
-            <form method="POST">
+            <form id="login-user" method="POST">
                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                 <!-- error message -->
-                <div class="alert alert-danger">Неверный логин или пароль.</div>
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger">
+                        <div class="d-flex align-content-start justify-content-between">
+                            <div class="p-2">Неверный логин или пароль.</div>
+                            <div class="p-2">
+                                <button form="forgot_passwords_page" type="submit" name="reset_password-submit"
+                                        id="reset_password-submit" class="form-control btn btn-danger">
+                                    Забыли пароль?
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- logout message -->
-                <div class="alert alert-info">Вы вышли из учётной записи.</div>
+                <div th:if="${param.logout}">
+                    <div class="alert alert-info">Вы вышли из учётной записи.</div>
+                </div>
 
                 <div class="form-group">
                     <label for="username"> Имя: </label>
@@ -58,18 +72,22 @@
                     <div class="row">
                         <div class="w-50 mx-auto">
                             <input type="submit" name="login-submit" id="login-submit"
-                                   class="form-control bnt bnt-primary" value="Войти">
+                                   class="form-control btn btn-primary" value="Войти">
                         </div>
                     </div>
                 </div>
             </form>
 
-            <div class="form-group">
-                <span>
-                    Забыл пароль, долбаёб?
-                    <a href="/forgot_passwords">Заходи сюда тогда.</a>
-                </span>
-            </div>
+            <form id="forgot_passwords_page" action="/forgot_passwords" method="GET"></form>
+
+
+<!--            <div class="form-group">-->
+<!--                <span>-->
+<!--                    Забыли пароль?-->
+<!--                    <a href="/forgot_passwords">Заходи сюда тогда.</a>-->
+<!--                </span>-->
+<!--            </div>-->
+            <br>
 
             <div class="form-group">
                 <span>
@@ -83,7 +101,7 @@
 </div>
 
 <!-- Без этой строчки перестают работать вкладки и прочее. Обязательно надо включить!!! -->
-<script src="http://code.jquery.com/jquery-3.6.4.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <!-- Подгружаю свой js для всяких кнопочек и прочей хрени -->

@@ -44,6 +44,7 @@ public class MyWebSocket extends TextWebSocketHandler {
 
         for (WebSocketSession wss : webSocketSessions) {
             try {
+                System.out.println("\ngetRequestNumber() = " + getRequestNumber() + "\n");
                 wss.sendMessage(getRequestNumber());
             } catch (Exception ex) {
                 ex.printStackTrace();

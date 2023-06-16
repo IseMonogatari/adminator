@@ -1,5 +1,6 @@
 package com.example.Preproject.dto;
 
+import com.example.Preproject.model.Duck;
 import com.example.Preproject.model.User;
 import com.example.Preproject.util.FormatterUtils;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class UserDTO {
     private String role;
     private String birthday;
     private Integer age;
+    private String duckUrl;
 
     public UserDTO(User user, Integer age) {
         this.id = user.getId().toString();
@@ -29,6 +31,27 @@ public class UserDTO {
         this.role = user.getAllRoles();
         this.birthday = user.getBirthday().format(FormatterUtils.defaultDateFormatter());
         this.age = age;
+    }
+
+    public UserDTO(User user, Integer age, DuckDTO duckDTO) {
+        this.id = user.getId().toString();
+        this.name = user.getName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.role = user.getAllRoles();
+        this.birthday = user.getBirthday().format(FormatterUtils.defaultDateFormatter());
+        this.age = age;
+        this.duckUrl = duckDTO.getUrl();
+    }
+
+    public UserDTO(User user) {
+        this.id = user.getId().toString();
+        this.name = user.getName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.role = user.getAllRoles();
     }
 
     public String toStringWithoutPassAndRole() {

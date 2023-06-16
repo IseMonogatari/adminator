@@ -2,9 +2,11 @@ package com.example.Preproject.service;
 
 
 import com.example.Preproject.dto.UserDTO;
+import com.example.Preproject.model.Duck;
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RolesRepository;
 import com.example.Preproject.repository.UsersRepository;
+import com.example.Preproject.service.API.DuckService;
 import com.example.Preproject.util.FormatterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +32,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private DuckService duckService;
+
 
     LocalDate nowTime = LocalDate.now();
 
@@ -41,6 +46,8 @@ public class UserServiceImpl implements UserService {
             user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
         } else if (user != null && user.getRoles().contains(rolesRepository.findByRole("ROLE_USER"))) {
             return null;
+        } else if (usersRepository.findUserByEmail(userDTO.getEmail()) != null) {
+            return null;
         } else {
             user = new User();
             user.setLastName(userDTO.getLastName());
@@ -51,6 +58,9 @@ public class UserServiceImpl implements UserService {
             user.setRoles(Collections.singleton(rolesRepository.findByRole(userDTO.getRole())));
         }
         usersRepository.save(user);
+//        Duck duck = new Duck(duckService.getDuckURL());
+//        user.setDuck(duck);
+        duckService.saveDuck(user);
         return new UserDTO(user, userAge(user));
     }
 
@@ -66,7 +76,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findUserById(Integer id) {
         User user = usersRepository.findUserById(id);
-        return new UserDTO(user, userAge(user));
+        return new UserDTO(user, userAge(user), duckService.findDuckURLFromDB(user));
     }
 
     @Override
@@ -78,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> allUsers() {
         return usersRepository.findAll()
                 .stream()
-                .map(u -> new UserDTO(u, userAge(u)))
+                .map(u -> new UserDTO(u, userAge(u), duckService.findDuckURLFromDB(u)))
                 .collect(Collectors.toList());
     }
 

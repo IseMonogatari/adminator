@@ -1,5 +1,6 @@
 package com.example.Preproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ public class Request {
     private Integer id;
     @Column(name = "active_request")
     private boolean activeRequest;
+    @JsonIgnore
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapsId
     @JoinColumn(name = "id")

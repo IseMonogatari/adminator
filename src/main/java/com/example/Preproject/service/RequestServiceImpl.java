@@ -1,5 +1,6 @@
 package com.example.Preproject.service;
 
+import com.example.Preproject.dto.UserDTO;
 import com.example.Preproject.model.Request;
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RequestRepository;
@@ -24,10 +25,11 @@ public class RequestServiceImpl implements RequestService {
     private VkService vkService;
 
     @Override
-    public List<User> getUsersByRequest() {
+    public List<UserDTO> getUsersByRequest() {
         return requestRepository.findAllByActiveRequest(true)
                 .stream()
                 .map(Request::getUser)
+                .map(UserDTO::new)
                 .collect(Collectors.toList());
     }
 

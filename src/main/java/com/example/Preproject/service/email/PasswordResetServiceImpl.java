@@ -8,8 +8,6 @@ import com.example.Preproject.repository.PasswordResetRepository;
 import com.example.Preproject.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -50,27 +48,22 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     @Override
-    public boolean passwordResetUser(String token) {
-        PasswordReset passwordReset = passwordResetRepository.findByToken(token);
-        if (passwordReset == null) {
-            return false;
-        }
-        passwordResetRepository.delete(passwordReset);
-        return true;
+    public boolean hasPaswordResetByToken(String token) {
+        return passwordResetRepository.findByToken(token) != null;
     }
 
     @Override
     public boolean saveNewPassword(PasswordResetDTO passwordResetDTO) {
-        User user = usersRepository.findUserByEmail(passwordResetDTO.getEmail());
-        if (!StringUtils.hasText(passwordResetDTO.getPassword())) {
-            return false;
-        } else {
-            if (!user.getEmail().equals(passwordResetDTO.getEmail())) {
-                user.setEmail(passwordResetDTO.getEmail());
-            }
+        if (isCorrectPasswordData(passwordResetDTO)) {
+            PasswordReset passwordReset = passwordResetRepository.findByToken(passwordResetDTO.getToken());
+            User user = passwordReset.getUser();
             user.setPassword(passwordEncoder.encode(passwordResetDTO.getPassword()));
+
+            passwordResetRepository.delete(passwordReset);
             usersRepository.save(user);
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -82,9 +75,18 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private void sendPasswordResetMessage(User user) {
         String message = String.format("Здравствуйте, %s!\n\n" +
                         "Для обновления пароля перейдите по ссылке: http://localhost:" + port +
-                        "/forgot_passwords/new_password/%s",
+                        "/forgot_passwords/new_password?token=%s",
                         user.getName(), findTokenByUserId(user.getId()));
 
         mailSender.send(user.getEmail(), SUBJECT_RESET_PASSWORD, message);
+    }
+
+    private boolean isCorrectPasswordData(PasswordResetDTO passwordResetDTO) {
+        if (!StringUtils.hasText(passwordResetDTO.getPassword()) ||
+                !passwordResetDTO.getPassword().equals(passwordResetDTO.getConfirmPassword())) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
