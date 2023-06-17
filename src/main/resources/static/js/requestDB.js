@@ -4,26 +4,12 @@ $(document).ready(function() {
         $(this).attr('disabled', true); // Либо добавить атрибут disabled
     });
 
-
     if (getUserStatus(showAuthorizedUser().id)) {
         $('#wantToBeAdmin').attr('disabled', true); // скрываем кнопку, если уже отправили запрос, но ответа нет
     }  else {
         $('#wantToBeAdmin').attr('disabled', false); // показываем кнопку
     }
 });
-
-
-// TODO изменяем цвет таба при отправке запроса "стать админом"
-function changeColor() {
-    let tab = document.getElementById('new_admin');
-    tab.style.backgroundColor = '#aa3402';
-    tab.style.color = '#ffffff';
-}
-function changeColorFalse() {
-    let tab = document.getElementById('new_admin');
-    tab.style.backgroundColor = '#F5F5F5';
-    tab.style.color = '#007bff';
-}
 
 //TODO При нажатии кнопки отправляем комментарий в ВК и меняем статус пользователя на Я ХОЧУ БЫТЬ АДМИНОМ
 function postToVKAndChangeUserStatusToIWantToBeAAdminInDB() {
@@ -100,9 +86,6 @@ function changeUserStatusToFalseAndGetRoleAdmin(USER_ID) {
     changeUserRoleToAdminInDB(showUser(USER_ID));
     getUsersWhichWantToBeAAdminForTable();
     showAllUsers();
-    // if (getUsersWhichWantToBeAAdmin().length === 0) {
-    //     changeColorFalse();
-    // }
 
     //отправить сообщение на сервер
     sendRequestToServer();
@@ -112,9 +95,6 @@ function changeUserStatusToFalseAndGetRoleAdmin(USER_ID) {
 function changeUserStatusToFalseAndRefuse(USER_ID) {
     changeUserStatus(USER_ID, false);
     getUsersWhichWantToBeAAdminForTable();
-    // if (getUsersWhichWantToBeAAdmin().length === 0) {
-    //     changeColorFalse();
-    // }
 
     // Send a message to the server
     sendRequestToServer();

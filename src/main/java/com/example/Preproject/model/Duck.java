@@ -21,13 +21,4 @@ public class Duck {
     @MapsId
     @JoinColumn(name = "id")
     private User user;
-
-    public Duck(String pictureUrl, User user) {
-        this.pictureUrl = pictureUrl;
-        this.user = user;
-    }
-
-    public Duck(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
 }

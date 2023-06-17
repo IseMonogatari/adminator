@@ -10,13 +10,16 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class Application {
 	public static void main(String[] args) {
-		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
-		RolesRepository roleRepository = context.getBean(RolesRepository.class);
 
-		roleRepository.save(new Role("ROLE_ADMIN"));
-		roleRepository.save(new Role("ROLE_USER"));
+		// Для первого запуска необходимо этот код раскомментить, а последнюю строчку закоментить
 
-//		SpringApplication.run(Application.class, args);
+//		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+//		RolesRepository roleRepository = context.getBean(RolesRepository.class);
+//
+//		roleRepository.save(new Role("ROLE_ADMIN"));
+//		roleRepository.save(new Role("ROLE_USER"));
+
+		SpringApplication.run(Application.class, args);
 	}
 
 }

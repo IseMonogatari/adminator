@@ -1,7 +1,5 @@
 package com.example.Preproject.repository;
 
-
-
 import com.example.Preproject.model.Role;
 import com.example.Preproject.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

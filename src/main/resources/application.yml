@@ -7,7 +7,7 @@ spring:
   jpa: ## ---- Postgres ----
     database: POSTGRESQL
     hibernate: ## ---- Hibernate ddl auto ---- # (create, create-drop, validate, update, none)
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true  # ---- Show SQL ----
 
   datasource: ## ---- Spring DATASOURCE ----

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ducks")
-public class DuckRC {
+public class DuckRestController {
     @Autowired
     private DuckService duckService;
 

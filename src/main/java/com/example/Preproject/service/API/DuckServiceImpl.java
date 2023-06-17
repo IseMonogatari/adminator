@@ -1,7 +1,6 @@
 package com.example.Preproject.service.API;
 
 import com.example.Preproject.dto.DuckDTO;
-import com.example.Preproject.dto.UserDTO;
 import com.example.Preproject.model.Duck;
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.DuckRepository;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,13 +27,6 @@ public class DuckServiceImpl implements DuckService {
     public DuckDTO findDuckURLFromDB(User user) {
         Duck duck = duckRepository.findDuckById(user.getId());
         return new DuckDTO(duck.getId(), duck.getPictureUrl());
-    }
-
-    @Override
-    public String getDuckURL() {
-        String uri = URL_DUCK_API + URL_FOR_RANDOM_DUCK;
-        return Objects.requireNonNull(restTemplate.exchange(uri, HttpMethod.GET, getHeaders(), DuckDTO.class)
-                        .getBody()).getUrl();
     }
 
     @Override
@@ -67,8 +58,7 @@ public class DuckServiceImpl implements DuckService {
     private HttpEntity<String> getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("user-agent", "Application");
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        return entity;
+        return new HttpEntity<>(headers);
     }
 
 }

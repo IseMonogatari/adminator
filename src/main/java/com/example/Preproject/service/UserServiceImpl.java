@@ -2,7 +2,6 @@ package com.example.Preproject.service;
 
 
 import com.example.Preproject.dto.UserDTO;
-import com.example.Preproject.model.Duck;
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RolesRepository;
 import com.example.Preproject.repository.UsersRepository;
@@ -58,8 +57,6 @@ public class UserServiceImpl implements UserService {
             user.setRoles(Collections.singleton(rolesRepository.findByRole(userDTO.getRole())));
         }
         usersRepository.save(user);
-//        Duck duck = new Duck(duckService.getDuckURL());
-//        user.setDuck(duck);
         duckService.saveDuck(user);
         return new UserDTO(user, userAge(user));
     }

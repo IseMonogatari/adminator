@@ -1,6 +1,5 @@
 package com.example.Preproject.dto;
 
-import com.example.Preproject.model.Duck;
 import com.example.Preproject.model.User;
 import com.example.Preproject.util.FormatterUtils;
 import lombok.Getter;

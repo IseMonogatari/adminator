@@ -48,7 +48,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     @Override
-    public boolean hasPaswordResetByToken(String token) {
+    public boolean hasPasswordResetByToken(String token) {
         return passwordResetRepository.findByToken(token) != null;
     }
 

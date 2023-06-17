@@ -34,7 +34,7 @@ public class MySchedule {
     private final String FINAL_STRING_FOR_PEOPLE = "\nНе забудьте поздравить этих людей!";
 
     LocalDate nowTime = LocalDate.now();
-
+    // Установить время на 1 день
 //    @Scheduled(fixedDelay = 120000)
     public void sendBirthdayMessageToAdmins() {
         List<User> admins = usersRepository.findAllByRoles(rolesRepository.findByRole("ROLE_ADMIN"));

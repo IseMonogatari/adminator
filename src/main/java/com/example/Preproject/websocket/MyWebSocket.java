@@ -30,16 +30,15 @@ public class MyWebSocket extends TextWebSocketHandler {
         System.out.println("\n Число подключений в начале: " + webSocketSessions.size() + "\n");
         session.sendMessage(getRequestNumber());
     }
-//    WebUtils
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-//        webSocketSessions.remove(session);
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        webSocketSessions.remove(session);
         System.out.println("Сессия типо закрыта: " + session);
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         System.out.println("\nЧисло сессий открытых = " + webSocketSessions.size() + "\n");
 
         for (WebSocketSession wss : webSocketSessions) {
