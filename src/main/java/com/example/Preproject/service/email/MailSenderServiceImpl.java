@@ -1,25 +1,25 @@
 package com.example.Preproject.service.email;
 
+import com.example.Preproject.config.properties.MailConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MailSenderImpl implements MailSender {
+public class MailSenderServiceImpl implements MailSenderService {
 
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @Value("${spring.mail.username}")
-    private String username;
+    @Autowired
+    private MailConfigProperties mailConfigProperties;
 
     @Override
     public void send(String emailTo, String subject, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        mailMessage.setFrom(username);
+        mailMessage.setFrom(mailConfigProperties.getUsername());
         mailMessage.setTo(emailTo);
         mailMessage.setSubject(subject);
         mailMessage.setText(message);

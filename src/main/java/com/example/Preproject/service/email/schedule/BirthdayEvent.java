@@ -1,9 +1,9 @@
-package com.example.Preproject.schedule;
+package com.example.Preproject.service.email.schedule;
 
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RolesRepository;
 import com.example.Preproject.repository.UsersRepository;
-import com.example.Preproject.service.email.MailSender;
+import com.example.Preproject.service.email.MailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class MySchedule {
+public class BirthdayEvent {
 
     @Autowired
     private UsersRepository usersRepository;
@@ -24,19 +24,21 @@ public class MySchedule {
     private RolesRepository rolesRepository;
 
     @Autowired
-    private MailSender mailSender;
+    private MailSenderService mailSenderService;
 
     @Value("${notifications.users.birthday}")
     private int daysBeforeBirthday;
+
+    private LocalDate nowTime;
 
     private final String SUBJECT_BIRTHDAY = "День рождения";
     private final String FINAL_STRING_FOR_PERSON = "\nНе забудьте поздравить этого человека!";
     private final String FINAL_STRING_FOR_PEOPLE = "\nНе забудьте поздравить этих людей!";
 
-    LocalDate nowTime = LocalDate.now();
-    // Установить время на 1 день
-//    @Scheduled(fixedDelay = 120000)
+    @Scheduled(cron = "@daily")
     public void sendBirthdayMessageToAdmins() {
+        nowTime = LocalDate.now();
+
         List<User> admins = usersRepository.findAllByRoles(rolesRepository.findByRole("ROLE_ADMIN"));
         List<String> userStringList = getUserStringsWithBirthday();
         if (!admins.isEmpty() && !userStringList.isEmpty()) {
@@ -48,7 +50,7 @@ public class MySchedule {
                 } else {
                     message.append(FINAL_STRING_FOR_PERSON);
                 }
-                mailSender.send(user.getEmail(), SUBJECT_BIRTHDAY, message.toString());
+                mailSenderService.send(user.getEmail(), SUBJECT_BIRTHDAY, message.toString());
             });
         }
     }

@@ -24,7 +24,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private UsersRepository usersRepository;
 
     @Autowired
-    private MailSender mailSender;
+    private MailSenderService mailSenderService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -78,7 +78,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                         "/forgot_passwords/new_password?token=%s",
                         user.getName(), findTokenByUserId(user.getId()));
 
-        mailSender.send(user.getEmail(), SUBJECT_RESET_PASSWORD, message);
+        mailSenderService.send(user.getEmail(), SUBJECT_RESET_PASSWORD, message);
     }
 
     private boolean isCorrectPasswordData(PasswordResetDTO passwordResetDTO) {

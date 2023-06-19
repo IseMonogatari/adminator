@@ -1,5 +1,5 @@
 package com.example.Preproject.service.email;
 
-public interface MailSender {
+public interface MailSenderService {
     void send(String emailTo, String subject, String message);
 }

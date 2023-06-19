@@ -1,6 +1,7 @@
 package com.example.Preproject.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.example.Preproject.config.properties.MailConfigProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -11,38 +12,24 @@ import java.util.Properties;
 @Configuration
 public class MailConfiguration {
 
-    @Value("${spring.mail.host}")
-    private String host;
-    @Value("${spring.mail.username}")
-    private String username;
-    @Value("${spring.mail.password}")
-    private String password;
-    @Value("${spring.mail.port}")
-    private int port;
-    @Value("${spring.mail.protocol}")
-    private String protocol;
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    private String auth;
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
-    private String enable;
-    @Value("${mail.debug}")
-    private String debug;
+    @Autowired
+    private MailConfigProperties mailConfigProperties;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-        mailSender.setHost(host);
-        mailSender.setPort(port);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
+        mailSender.setHost(mailConfigProperties.getHost());
+        mailSender.setPort(mailConfigProperties.getPort());
+        mailSender.setUsername(mailConfigProperties.getUsername());
+        mailSender.setPassword(mailConfigProperties.getPassword());
 
         Properties properties = mailSender.getJavaMailProperties();
 
-        properties.setProperty("mail.transport.protocol", protocol);
-        properties.setProperty("mail.smtp.auth", auth);
-        properties.setProperty("mail.smtp.starttls.enable", enable);
-        properties.setProperty("mail.debug", debug);
+        properties.setProperty("mail.transport.protocol", mailConfigProperties.getProtocol());
+        properties.setProperty("mail.smtp.auth", mailConfigProperties.getAuth());
+        properties.setProperty("mail.smtp.starttls.enable", mailConfigProperties.getEnable());
+        properties.setProperty("mail.debug", mailConfigProperties.getDebug());
 
         return  mailSender;
     }

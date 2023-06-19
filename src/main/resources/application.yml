@@ -7,13 +7,13 @@ spring:
   jpa: ## ---- Postgres ----
     database: POSTGRESQL
     hibernate: ## ---- Hibernate ddl auto ---- # (create, create-drop, validate, update, none)
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true  # ---- Show SQL ----
 
   datasource: ## ---- Spring DATASOURCE ----
     url: jdbc:postgresql://localhost:5432/spring_hiber?useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8
-    username: root
-    password: root
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   mvc:
     hidden-method: ## ---- Hidden Method ----
@@ -22,10 +22,11 @@ spring:
 
   mail: ## ---- Mail ----
     host: smtp.gmail.com
-    username: shapran.spb@gmail.com
-    password: jlrjhkncvnoqbopo
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_PASSWORD}
     port: !!int 587
     protocol: smtp
+    debug: false
     properties:
       mail:
         smtp:
@@ -33,9 +34,14 @@ spring:
           starttls:
             enable: true
 
-mail: # ---- Делаем логирование в консоли ----
-  debug: false
+#mail: # ---- Делаем логирование в консоли ----
+#  debug: false
 
-notifications: # ---- Попределяем число дней перед уведомлением админов о ДР пользователей
+notifications: # ---- Попределяем число дней перед уведомлением админов о ДР пользователей ----
   users:
     birthday: !!int 5
+
+api: # ---- Добавляем токены через переменные окружения для своих API ----
+  tokens:
+    vkWithBearer: ${VK_API_TOKEN_WITH_BEARER}
+    vkWithoutBearer: ${VK_API_TOKEN}
