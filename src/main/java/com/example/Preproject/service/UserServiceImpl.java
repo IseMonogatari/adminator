@@ -4,7 +4,6 @@ package com.example.Preproject.service;
 import com.example.Preproject.dto.UserDTO;
 import com.example.Preproject.model.Role;
 import com.example.Preproject.model.User;
-import com.example.Preproject.repository.RolesRepository;
 import com.example.Preproject.repository.UsersRepository;
 import com.example.Preproject.service.API.DuckService;
 import com.example.Preproject.util.FormatterUtils;
@@ -13,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -26,13 +24,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersRepository usersRepository;
-
-    @Autowired
-    private RolesRepository rolesRepository;
-
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private DuckService duckService;
 
@@ -52,7 +47,8 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userDTO.getEmail());
             user.setBirthday(userBirthday(userDTO));
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            user.setRoles(Collections.singleton(rolesRepository.findByRole(userDTO.getRole())));
+            user.setRoles(Collections.singleton(roleService.getRoleByName(userDTO.getRole())));
+
         }
         usersRepository.save(user);
         duckService.saveDuck(user);
@@ -90,7 +86,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO update(UserDTO userDTO) {
         User updatedUser = usersRepository.findUserById(Integer.valueOf(userDTO.getId()));
-//        updatedUser = checkUserRole(updatedUser, userDTO, "ROLE_ADMIN", "ROLE_USER");
         updatedUser = checkUserEntity(updatedUser, userDTO);
         if (updatedUser == null) {
             return null;
@@ -111,59 +106,6 @@ public class UserServiceImpl implements UserService {
 
     // ---- Приватные методы ----
 
-
-    private User checkUserRole(User user, UserDTO userDTO, String fistRole, String secondRole) {
-        if (user.getRoles().contains(rolesRepository.findByRole(fistRole))) {
-            user.setLastName(userDTO.getLastName());
-            user.setName(userDTO.getName());
-            user.setEmail(userDTO.getEmail());
-            user.setBirthday(userBirthday(userDTO));
-            checkChangePassword(user, userDTO);
-            checkUserRolesForRolePresence(user, userDTO, fistRole);
-        } else if (equalsUserDataWithoutRole(user, userDTO)) {  //условие для добавления роли АДМИН через кнопку
-            user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
-        } else if (user.getRoles().contains(rolesRepository.findByRole(secondRole))
-                && (checkUserRolesForRolePresence(user, userDTO, fistRole) == null)) {
-            return null;
-        } else {
-            user.setLastName(userDTO.getLastName());
-            user.setName(userDTO.getName());
-            user.setEmail(userDTO.getEmail());
-            user.setBirthday(userBirthday(userDTO));
-            checkChangePassword(user, userDTO);
-        }
-        return user;
-    }
-
-    private void checkChangePassword(User user, UserDTO userDTO) {
-        if (!userDTO.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        }
-    }
-
-    private User checkUserRolesForRolePresence(User user, UserDTO userDTO, String role) {
-        if (!Objects.equals(userDTO.getRole(), role)) {
-            user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
-            return user;
-        }
-        return null;
-    }
-
-    private boolean equalsUserDataWithoutRole(User user, UserDTO userDTO) {
-        return userDTO.toStringWithoutPassAndRole().equals(user.toStringWithoutPassAndRole())
-                && userDTO.getPassword() == null;
-    }
-
-    private LocalDate userBirthday(UserDTO userDTO) {
-        return LocalDate.parse(userDTO.getBirthday(), FormatterUtils.defaultDateFormatter());
-    }
-
-    private Integer userAge(User user) {
-        return Period.between(user.getBirthday(), LocalDate.now()).getYears();
-    }
-
-    @Autowired
-    private RoleService roleService;
 
     private User checkUserEntity(User user, UserDTO userDTO) {
         if (user.getRoles().contains(roleService.adminRole())) {
@@ -201,5 +143,25 @@ public class UserServiceImpl implements UserService {
     private List<String> userDTORoles(UserDTO userDTO) {
         return Arrays.stream(userDTO.getRole().split("\\s"))
                 .collect(Collectors.toList());
+    }
+
+
+    private void checkChangePassword(User user, UserDTO userDTO) {
+        if (!userDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+    }
+
+    private boolean equalsUserDataWithoutRole(User user, UserDTO userDTO) {
+        return userDTO.toStringWithoutPassAndRole().equals(user.toStringWithoutPassAndRole())
+                && userDTO.getPassword() == null;
+    }
+
+    private LocalDate userBirthday(UserDTO userDTO) {
+        return LocalDate.parse(userDTO.getBirthday(), FormatterUtils.defaultDateFormatter());
+    }
+
+    private Integer userAge(User user) {
+        return Period.between(user.getBirthday(), LocalDate.now()).getYears();
     }
 }
