@@ -2,6 +2,7 @@ package com.example.Preproject.service;
 
 
 import com.example.Preproject.dto.UserDTO;
+import com.example.Preproject.model.Role;
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RolesRepository;
 import com.example.Preproject.repository.UsersRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -34,16 +36,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private DuckService duckService;
 
-
-    LocalDate nowTime = LocalDate.now();
-
-
     @Override
     public UserDTO save(UserDTO userDTO) {
         User user = usersRepository.findByName(userDTO.getName());
-        if (user != null && user.getRoles().contains(rolesRepository.findByRole("ROLE_ADMIN"))) {
-            user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
-        } else if (user != null && user.getRoles().contains(rolesRepository.findByRole("ROLE_USER"))) {
+        if (user != null && user.getRoles().contains(roleService.adminRole())) {
+            user.getRoles().add(roleService.getRoleByName(userDTO.getRole()));
+        } else if (user != null && user.getRoles().contains(roleService.userRole())) {
             return null;
         } else if (usersRepository.findUserByEmail(userDTO.getEmail()) != null) {
             return null;
@@ -92,7 +90,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO update(UserDTO userDTO) {
         User updatedUser = usersRepository.findUserById(Integer.valueOf(userDTO.getId()));
-        updatedUser = checkRoleData(updatedUser, userDTO, "ROLE_ADMIN", "ROLE_USER");
+//        updatedUser = checkUserRole(updatedUser, userDTO, "ROLE_ADMIN", "ROLE_USER");
+        updatedUser = checkUserEntity(updatedUser, userDTO);
         if (updatedUser == null) {
             return null;
         }
@@ -113,18 +112,18 @@ public class UserServiceImpl implements UserService {
     // ---- Приватные методы ----
 
 
-    private User checkRoleData(User user, UserDTO userDTO, String fistRole, String secondRole) {
+    private User checkUserRole(User user, UserDTO userDTO, String fistRole, String secondRole) {
         if (user.getRoles().contains(rolesRepository.findByRole(fistRole))) {
             user.setLastName(userDTO.getLastName());
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
             user.setBirthday(userBirthday(userDTO));
             checkChangePassword(user, userDTO);
-            checkEqualRole(user, userDTO, fistRole);
+            checkUserRolesForRolePresence(user, userDTO, fistRole);
         } else if (equalsUserDataWithoutRole(user, userDTO)) {  //условие для добавления роли АДМИН через кнопку
             user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
         } else if (user.getRoles().contains(rolesRepository.findByRole(secondRole))
-                && (checkEqualRole(user, userDTO, fistRole) == null)) {
+                && (checkUserRolesForRolePresence(user, userDTO, fistRole) == null)) {
             return null;
         } else {
             user.setLastName(userDTO.getLastName());
@@ -142,8 +141,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private User checkEqualRole(User user, UserDTO userDTO, String ROLE) {
-        if (!Objects.equals(userDTO.getRole(), ROLE)) {
+    private User checkUserRolesForRolePresence(User user, UserDTO userDTO, String role) {
+        if (!Objects.equals(userDTO.getRole(), role)) {
             user.getRoles().add(rolesRepository.findByRole(userDTO.getRole()));
             return user;
         }
@@ -160,6 +159,47 @@ public class UserServiceImpl implements UserService {
     }
 
     private Integer userAge(User user) {
-        return Period.between(user.getBirthday(), nowTime).getYears();
+        return Period.between(user.getBirthday(), LocalDate.now()).getYears();
+    }
+
+    @Autowired
+    private RoleService roleService;
+
+    private User checkUserEntity(User user, UserDTO userDTO) {
+        if (user.getRoles().contains(roleService.adminRole())) {
+            user.setLastName(userDTO.getLastName());
+            user.setName(userDTO.getName());
+            user.setEmail(userDTO.getEmail());
+            user.setBirthday(userBirthday(userDTO));
+            checkChangePassword(user, userDTO);
+            checkForRole(user, userDTO, roleService.adminRole());
+        } else if (equalsUserDataWithoutRole(user, userDTO)) {  //условие для добавления роли АДМИН через кнопку
+            user.getRoles().add(roleService.getRoleByName(userDTO.getRole()));
+        } else if (user.getRoles().contains(roleService.userRole())
+                && (checkForRole(user, userDTO, roleService.adminRole()) == null)) {
+            return null;
+        } else {
+            user.setLastName(userDTO.getLastName());
+            user.setName(userDTO.getName());
+            user.setEmail(userDTO.getEmail());
+            user.setBirthday(userBirthday(userDTO));
+            checkChangePassword(user, userDTO);
+        }
+        return user;
+    }
+
+    private User checkForRole(User user, UserDTO userDTO, Role role) {
+        if (new HashSet<>(userDTORoles(userDTO)).containsAll(roleService.namesOfAllRoles())
+                || Objects.equals(userDTO.getRole(), role.getRole())) {
+            return null;
+        } else {
+            user.getRoles().add(roleService.getRoleByName(userDTO.getRole()));
+            return user;
+        }
+    }
+
+    private List<String> userDTORoles(UserDTO userDTO) {
+        return Arrays.stream(userDTO.getRole().split("\\s"))
+                .collect(Collectors.toList());
     }
 }

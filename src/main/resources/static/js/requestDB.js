@@ -146,6 +146,7 @@ function changeUserRoleToAdminInDB(USER) {
             lastName: USER.lastName,
             name: USER.name,
             email: USER.email,
+            birthday: USER.birthday,
             password: null, //не передаём пароль, ибо он зашифрованный, что нельзя будет сравнить
             role: "ROLE_ADMIN"
         }),

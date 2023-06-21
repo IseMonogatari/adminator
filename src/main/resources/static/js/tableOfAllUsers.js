@@ -60,7 +60,7 @@ function showUser(ID) {
         success: function (response) {
             user = response;
             console.log("Удачный вызов пользователя по ID = " + ID);
-            // console.log(response);
+            console.log(response);
         },
         error: function (error) {
             console.log("Ошибка вызова пользователя по ID")
@@ -86,7 +86,12 @@ function editModalById(ID) {
     $("#email_edit").val(user.email);
     $("#birthday_edit").val(user.birthday);
     $("#password_edit").val();  //user.password
-    $("#role_edit").val(user.role);
+    if (user.role.includes('ROLE_ADMIN') && user.role.includes('ROLE_USER')) {
+        $("#role_edit").val('ROLE_ALL');
+    } else {
+        $("#role_edit").val(user.role);
+    }
+
 
 
     $('#modal_edit').modal({
@@ -112,6 +117,12 @@ function editModalById(ID) {
 //TODO функция обновления пользователя
 function editUser(ID) {
     let good = false;
+    let role;
+    if ($("#role_edit").val() === 'ROLE_ALL') {
+        role = showUser(ID).role;
+    } else {
+        role = $("#role_edit").val();
+    }
     $.ajax({
         url: '/users',
         type: 'PUT',
@@ -125,7 +136,8 @@ function editUser(ID) {
             email: $("#email_edit").val(),
             birthday: $("#birthday_edit").val(),
             password: $("#password_edit").val(),
-            role: $("#role_edit").val()
+            role: role
+
         }),
         success: function(result) {
             console.log(result);

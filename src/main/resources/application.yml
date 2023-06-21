@@ -34,14 +34,23 @@ spring:
           starttls:
             enable: true
 
-#mail: # ---- Делаем логирование в консоли ----
-#  debug: false
-
 notifications: # ---- Попределяем число дней перед уведомлением админов о ДР пользователей ----
   users:
     birthday: !!int 5
 
 api: # ---- Добавляем токены через переменные окружения для своих API ----
-  tokens:
-    vkWithBearer: ${VK_API_TOKEN_WITH_BEARER}
-    vkWithoutBearer: ${VK_API_TOKEN}
+  port: !!int 8080 # да-да, повторяемся
+  vk:
+    tokenWithBearer: ${VK_API_TOKEN_WITH_BEARER}
+    tokenWithoutBearer: ${VK_API_TOKEN}
+    URL_CREATE_COMMENT: https://api.vk.com/method/wall.createComment
+    URL_GET_COMMENTS: https://api.vk.com/method/wall.getComments
+    URL_UPDATE_COMMENT: https://api.vk.com/method/wall.editComment
+    URL_DELETE_COMMENT: https://api.vk.com/method/wall.deleteComment
+    OWNER_ID: ${VK_API_OWNER_ID}
+    POST_ID: 2
+    PREVIEW_LENGTH: 0
+    V: 5.131
+  duck:
+    URL_DUCK_API: https://random-d.uk/api/v2
+    URL_FOR_RANDOM_DUCK: /random

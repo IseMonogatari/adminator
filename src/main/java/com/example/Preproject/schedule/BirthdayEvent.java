@@ -1,4 +1,4 @@
-package com.example.Preproject.service.email.schedule;
+package com.example.Preproject.schedule;
 
 import com.example.Preproject.model.User;
 import com.example.Preproject.repository.RolesRepository;

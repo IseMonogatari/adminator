@@ -18,6 +18,7 @@ public class Application {
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 		RolesRepository roleRepository = context.getBean(RolesRepository.class);
 
+
 		roleRepository.save(new Role("ROLE_ADMIN"));
 		roleRepository.save(new Role("ROLE_USER"));
 

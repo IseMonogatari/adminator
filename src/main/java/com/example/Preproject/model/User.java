@@ -2,6 +2,7 @@ package com.example.Preproject.model;
 
 
 import com.example.Preproject.util.FormatterUtils;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,14 +31,12 @@ public class User implements UserDetails {
     private String lastName;
     @Column(name = "email", unique = true)
     private String email;
-
     @Column(name = "birthday")
     private LocalDate birthday;
-
     @Column(name = "password", length = 1000)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}) //CascadeType.ALL
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -76,13 +75,6 @@ public class User implements UserDetails {
                 " " + name +
                 " " + email +
                 " " + this.birthday.format(FormatterUtils.defaultDateFormatter());
-    }
-
-    public void setDuck(Duck duck) {
-        if (duck != null) {
-            duck.setUser(this);
-        }
-        this.duck = duck;
     }
 
     @Override
